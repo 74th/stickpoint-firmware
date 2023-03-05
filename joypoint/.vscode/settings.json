@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "*.jinja": "yaml",
+    "*.md": "markdown",
+    "bashrc": "shellscript",
+    "*.service": "plaintext",
+    "initializer_list": "cpp"
+  }
+}
