@@ -45,8 +45,8 @@ void init_adc()
 
     RCC_ADCCLKConfig(RCC_PCLK2_Div8);
 
-    // PC2 A0 XOUT
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    // PA2 A0 XOUT
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
@@ -82,8 +82,9 @@ void init_adc()
 
 uint16_t read_adc(uint8_t channel)
 {
-    ADC_RegularChannelConfig(ADC1, channel, 1, ADC_SampleTime_15Cycles);
+    ADC_RegularChannelConfig(ADC1, channel, 1, ADC_SampleTime_3Cycles);
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET)
         ;
     return ADC_GetConversionValue(ADC1);
