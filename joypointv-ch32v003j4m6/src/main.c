@@ -1,6 +1,10 @@
 #include "debug.h"
 #include "system_ch32v00x.h"
 
+#define XOUT_ADC_CHANNEL ADC_Channel_0
+#define YOUT_ADC_CHANNEL ADC_Channel_1
+#define V33_ADC_CHANNEL ADC_Channel_2
+
 void init_rcc()
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
@@ -66,7 +70,7 @@ void init_adc()
     ADC_Init(ADC1, &ADC_InitStructure);
 
     ADC_Calibration_Vol(ADC1, ADC_CALVOL_50PERCENT);
-    ADC_DMACmd(ADC1, ENABLE);
+    // ADC_DMACmd(ADC1, ENABLE);
     ADC_Cmd(ADC1, ENABLE);
     ADC_ResetCalibration(ADC1);
     while (ADC_GetResetCalibrationStatus(ADC1))
@@ -76,6 +80,15 @@ void init_adc()
         ;
 }
 
+uint16_t read_adc(uint8_t channel)
+{
+    ADC_RegularChannelConfig(ADC1, channel, 1, ADC_SampleTime_15Cycles);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET)
+        ;
+    return ADC_GetConversionValue(ADC1);
+}
+
 int main(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
@@ -83,7 +96,7 @@ int main(void)
     init_rcc();
     init_i2c();
     init_adc();
-#ifdef ENABLE_UART
+#ifdef CH32V003F4
     USART_Printf_Init(115200);
 #endif
 
@@ -91,5 +104,12 @@ int main(void)
 
     while (1)
     {
+        uint16_t xout_adc_value = read_adc(XOUT_ADC_CHANNEL);
+        uint16_t yout_adc_value = read_adc(YOUT_ADC_CHANNEL);
+        uint16_t v33_adc_value = read_adc(V33_ADC_CHANNEL);
+#ifdef CH32V003F4
+        printf("XOUT: %d, YOUT: %d, V33: %d\r\n", xout_adc_value, yout_adc_value, v33_adc_value);
+#endif
+        Delay_Ms(1000);
     }
 }
