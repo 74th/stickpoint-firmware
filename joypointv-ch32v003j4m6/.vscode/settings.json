@@ -1,13 +1,15 @@
 {
+  "cmake.configureOnOpen": false,
+  "makefile.launchConfigurations": [
+    {
+      "cwd": "",
+      "sbinaryPath": "blink.elf",
+      "binaryArgs": []
+    }
+  ],
+  "editor.insertSpaces": false,
+  "editor.tabSize": 4,
   "files.associations": {
-    "*.jinja": "yaml",
-    "*.md": "markdown",
-    "bashrc": "shellscript",
-    "*.service": "plaintext",
-    "ch32v00x_dma.h": "c",
-    "debug.h": "c",
-    "ch32v00x.h": "c",
-    "system_ch32v00x.h": "c",
-    "ch32v00x_adc.h": "c"
+    "ch32v003fun.h": "c"
   }
 }
