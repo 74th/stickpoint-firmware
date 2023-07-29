@@ -1,5 +1,5 @@
 #include "ch32v003fun.h"
-#include "i2c_slave.h"
+#include "joypointv.h"
 #include <stdio.h>
 
 // The I2C slave library uses a one byte address so you can extend the size of this array up to 256 registers
