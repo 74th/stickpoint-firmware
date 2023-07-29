@@ -280,8 +280,8 @@ void loop()
     int32_t down = 0;
 
     int32_t raw_vcc = adc_buf[2];
-    int32_t raw_x = adc_buf[0];
-    int32_t raw_y = adc_buf[1];
+    int32_t raw_x = adc_buf[1];
+    int32_t raw_y = adc_buf[0];
     read_analog(raw_vcc, raw_x, &left, &right);
     read_analog(raw_vcc, raw_y, &down, &up);
 
