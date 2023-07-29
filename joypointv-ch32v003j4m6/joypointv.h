@@ -31,13 +31,4 @@
 
 #define APB_CLOCK FUNCONF_SYSTEM_CORE_CLOCK
 
-struct _i2c_slave_state
-{
-    uint8_t first_write;
-    uint8_t offset;
-    uint8_t position;
-    volatile uint8_t *volatile registers;
-    uint8_t size;
-} i2c_slave_state;
-
 #endif

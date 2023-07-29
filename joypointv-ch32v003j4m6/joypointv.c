@@ -24,11 +24,6 @@ void init_rcc(void)
 void init_i2c_slave(uint8_t address, volatile uint8_t *registers, uint8_t size)
 {
     // https://github.com/cnlohr/ch32v003fun/blob/master/examples/i2c_slave/i2c_slave.h
-    i2c_slave_state.first_write = 1;
-    i2c_slave_state.offset = 0;
-    i2c_slave_state.position = 0;
-    i2c_slave_state.registers = registers;
-    i2c_slave_state.size = size;
 
     // PC1 is SDA, 10MHz Output, alt func, open-drain
     GPIOC->CFGLR &= ~(0xf << (4 * 1));
@@ -75,6 +70,7 @@ void init_i2c_slave(uint8_t address, volatile uint8_t *registers, uint8_t size)
 
 void init_adc(void)
 {
+    // https://github.com/cnlohr/ch32v003fun/tree/master/examples/adc_dma_opamp
 
     // ADCCLK = 24 MHz => RCC_ADCPRE = 0: divide by 2
     RCC->CFGR0 &= ~(0x1F << 11);
@@ -147,6 +143,8 @@ void init_adc(void)
     ADC1->CTLR2 |= ADC_SWSTART;
 }
 
+uint8_t i2c_scan_position = 0;
+
 void I2C1_EV_IRQHandler(void)
 {
     uint16_t STAR1, STAR2 __attribute__((unused));
@@ -166,51 +164,30 @@ void I2C1_EV_IRQHandler(void)
 #endif
         // 最初のイベント
         // read でも write でも必ず最初に呼ばれる
-        i2c_slave_state.first_write = 1;
-        i2c_slave_state.position = i2c_slave_state.offset;
+        i2c_scan_position = 0;
     }
 
     if (STAR1 & I2C_STAR1_RXNE) // 0x0040
     {
 #ifdef FUNCONF_USE_UARTPRINTF
-        printf("RXNE write event: pos:%d\r\n", i2c_slave_state.position);
+        printf("RXNE write event: pos:%d\r\n", i2c_scan_position);
 #endif
-        // 1byte の write イベント（master -> slave）
-        if (i2c_slave_state.first_write)
-        {
-            // 1byte 受信
-            // オフセットとして設定
-            i2c_slave_state.offset = I2C1->DATAR;
-            i2c_slave_state.position = i2c_slave_state.offset;
-            i2c_slave_state.first_write = 0;
-        }
-        else
-        {
-            if (i2c_slave_state.position < i2c_slave_state.size)
-            {
-                // 1byte 受信
-                i2c_slave_state.registers[i2c_slave_state.position] = I2C1->DATAR;
-                i2c_slave_state.position++;
-            }
-            else
-            {
-                // 必ず読み込まないと TIMEOUT してしまう
-                I2C1->DATAR;
-            }
-        }
+        // 1byte 受信
+        I2C1->DATAR;
     }
 
     if (STAR1 & I2C_STAR1_TXE) // 0x0080
     {
         // 1byte の read イベント（slave -> master）
 #ifdef FUNCONF_USE_UARTPRINTF
-        printf("TXE write event: pos:%d\r\n", i2c_slave_state.position);
+        printf("TXE write event: pos:%d\r\n", i2c_scan_position);
 #endif
-        if (i2c_slave_state.position < i2c_slave_state.size)
+        if (i2c_scan_position < 5)
         {
             // 1byte 送信
-            I2C1->DATAR = i2c_slave_state.registers[i2c_slave_state.position];
-            i2c_slave_state.position++;
+            uint8_t data = i2c_buf[i2c_scan_position];
+            I2C1->DATAR = data;
+            i2c_scan_position++;
         }
         else
         {
@@ -356,11 +333,20 @@ void raw_adc_test()
     uint16_t raw_vcc = adc_buf[2];
     uint16_t raw_x = adc_buf[0];
     uint16_t raw_y = adc_buf[1];
-    i2c_buf[0] = (uint8_t)(raw_x / 2);
-    i2c_buf[1] = (uint8_t)(raw_y / 2);
-    i2c_buf[2] = (uint8_t)(raw_vcc / 2);
+    i2c_buf[0] = (uint8_t)(raw_x >> 2);
+    i2c_buf[1] = (uint8_t)(raw_y >> 2);
+    i2c_buf[2] = (uint8_t)(raw_vcc >> 2);
     i2c_buf[3] = (uint8_t)0;
     i2c_buf[4] = (uint8_t)0;
+
+    // i2c_buf[0] = (uint8_t)((0xff00 & raw_x) >> 8);
+    // i2c_buf[1] = (uint8_t)((0x00ff & raw_x));
+    // i2c_buf[2] = (uint8_t)((0xff00 & raw_y) >> 8);
+    // i2c_buf[3] = (uint8_t)((0x00ff & raw_y));
+
+#ifdef FUNCONF_USE_UARTPRINTF
+    printf("raw_x: %d, raw_y: %d, raw_vcc: %d\r\n", raw_x, raw_y, raw_vcc);
+#endif
 }
 
 int main()
@@ -382,8 +368,9 @@ int main()
 
     while (1)
     {
-        // loop();
-        raw_adc_test();
+        loop();
         Delay_Ms(loop_ms);
+        // raw_adc_test();
+        // Delay_Ms(500);
     }
 }
