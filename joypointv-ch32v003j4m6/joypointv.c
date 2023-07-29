@@ -2,10 +2,13 @@
 #include "joypointv.h"
 #include <stdio.h>
 
-#define ADC_NUMCHLS 3
+#define I2C_SLAVE_ADDRESS 0xA
 
-volatile uint8_t i2c_registers[32] = {0x00};
-volatile uint16_t adc_buffer[ADC_NUMCHLS];
+#define ADC_NUMCHLS 3
+#define I2C_BUF_SIZE 5
+
+volatile uint8_t i2c_buf[I2C_BUF_SIZE];
+volatile uint16_t adc_buf[ADC_NUMCHLS];
 
 void I2C1_EV_IRQHandler(void) __attribute__((interrupt));
 void I2C1_ER_IRQHandler(void) __attribute__((interrupt));
@@ -120,7 +123,7 @@ void init_adc(void)
 
     // DMA1_Channel1 is for ADC
     DMA1_Channel1->PADDR = (uint32_t)&ADC1->RDATAR;
-    DMA1_Channel1->MADDR = (uint32_t)adc_buffer;
+    DMA1_Channel1->MADDR = (uint32_t)adc_buf;
     DMA1_Channel1->CNTR = ADC_NUMCHLS;
     DMA1_Channel1->CFGR =
         DMA_M2M_Disable |
@@ -150,13 +153,17 @@ void I2C1_EV_IRQHandler(void)
     STAR1 = I2C1->STAR1;
     STAR2 = I2C1->STAR2;
 
+#ifdef FUNCONF_USE_UARTPRINTF
     printf("EV STAR1: 0x%04x STAR2: 0x%04x\r\n", STAR1, STAR2);
+#endif
 
     I2C1->CTLR1 |= I2C_CTLR1_ACK;
 
     if (STAR1 & I2C_STAR1_ADDR) // 0x0002
     {
+#ifdef FUNCONF_USE_UARTPRINTF
         printf("ADDR\r\n");
+#endif
         // 最初のイベント
         // read でも write でも必ず最初に呼ばれる
         i2c_slave_state.first_write = 1;
@@ -165,7 +172,9 @@ void I2C1_EV_IRQHandler(void)
 
     if (STAR1 & I2C_STAR1_RXNE) // 0x0040
     {
+#ifdef FUNCONF_USE_UARTPRINTF
         printf("RXNE write event: pos:%d\r\n", i2c_slave_state.position);
+#endif
         // 1byte の write イベント（master -> slave）
         if (i2c_slave_state.first_write)
         {
@@ -194,7 +203,9 @@ void I2C1_EV_IRQHandler(void)
     if (STAR1 & I2C_STAR1_TXE) // 0x0080
     {
         // 1byte の read イベント（slave -> master）
+#ifdef FUNCONF_USE_UARTPRINTF
         printf("TXE write event: pos:%d\r\n", i2c_slave_state.position);
+#endif
         if (i2c_slave_state.position < i2c_slave_state.size)
         {
             // 1byte 送信
@@ -207,14 +218,15 @@ void I2C1_EV_IRQHandler(void)
             I2C1->DATAR = 0x00;
         }
     }
-    //
 }
 
 void I2C1_ER_IRQHandler(void)
 {
     uint16_t STAR1 = I2C1->STAR1;
 
+#ifdef FUNCONF_USE_UARTPRINTF
     printf("ER STAR1: 0x%04x\r\n", STAR1);
+#endif
 
     if (STAR1 & I2C_STAR1_BERR)           // 0x0100
     {                                     // Bus error
@@ -232,22 +244,146 @@ void I2C1_ER_IRQHandler(void)
     }
 }
 
+// const int max = 1024;
+const int32_t deadzone = 100;
+const int32_t high_zone = 7;
+const int32_t middle = 200;
+const uint32_t loop_ms = 12;
+const uint32_t max_ms = 4028;
+
+int32_t last_center_ms = 0;
+int32_t last_high_ms = 0;
+int8_t in_dash = 0;
+
+void read_analog(int32_t vcc, int32_t a, int32_t *under, int32_t *upper)
+{
+
+    int32_t max = vcc;
+    int32_t center = vcc / 2;
+    if (a < high_zone)
+    {
+        *under = 5;
+    }
+    else if (a < middle)
+    {
+        *under = 3;
+    }
+    else if (a < center - deadzone)
+    {
+        *under = 1;
+    }
+    else
+    {
+        *under = 0;
+    }
+
+    if (max - high_zone < a)
+    {
+        *upper = 5;
+    }
+    else if (max - middle < a)
+    {
+        *upper = 3;
+    }
+    else if (center + deadzone < a)
+    {
+        *upper = 1;
+    }
+    else
+    {
+        *upper = 0;
+    }
+}
+
+void loop()
+{
+    int32_t left = 0;
+    int32_t right = 0;
+    int32_t up = 0;
+    int32_t down = 0;
+
+    int32_t raw_vcc = adc_buf[2];
+    int32_t raw_x = adc_buf[0];
+    int32_t raw_y = adc_buf[1];
+    read_analog(raw_vcc, raw_x, &left, &right);
+    read_analog(raw_vcc, raw_y, &down, &up);
+
+    if (left == 0 && right == 0)
+    {
+        last_center_ms = 0;
+    }
+    else
+    {
+        if (last_center_ms < max_ms)
+        {
+            last_center_ms += loop_ms;
+        }
+    }
+
+    if (left + right + up + down >= 4)
+    {
+        if (!in_dash && last_center_ms < 300 && 10 < last_high_ms && last_high_ms < 300)
+        {
+            in_dash = 1;
+        }
+        if (in_dash)
+        {
+            left = left * 2;
+            right = right * 2;
+            up = up * 2;
+            down = down * 2;
+        }
+        last_high_ms = 0;
+    }
+    else
+    {
+        in_dash = 0;
+        if (last_high_ms < max_ms)
+        {
+            last_high_ms += loop_ms;
+        }
+    }
+
+    i2c_buf[0] = (uint8_t)left;
+    i2c_buf[1] = (uint8_t)right;
+    i2c_buf[2] = (uint8_t)down;
+    i2c_buf[3] = (uint8_t)up;
+    i2c_buf[4] = (uint8_t)0;
+}
+
+void raw_adc_test()
+{
+    uint16_t raw_vcc = adc_buf[2];
+    uint16_t raw_x = adc_buf[0];
+    uint16_t raw_y = adc_buf[1];
+    i2c_buf[0] = (uint8_t)(raw_x / 2);
+    i2c_buf[1] = (uint8_t)(raw_y / 2);
+    i2c_buf[2] = (uint8_t)(raw_vcc / 2);
+    i2c_buf[3] = (uint8_t)0;
+    i2c_buf[4] = (uint8_t)0;
+}
+
 int main()
 {
     SystemInit();
     init_rcc();
 
+#ifdef FUNCONF_USE_UARTPRINTF
     printf("using ch32v003fun\r\n");
     printf("initialize\r\n");
+#endif
 
-    init_i2c_slave(0x9, i2c_registers, sizeof(i2c_registers));
+    init_i2c_slave(I2C_SLAVE_ADDRESS, i2c_buf, sizeof(i2c_buf));
     init_adc();
 
+#ifdef FUNCONF_USE_UARTPRINTF
     printf("initialize done\r\n");
+#endif
 
     while (1)
     {
-        printf("%4d %4d %4d\n\r", adc_buffer[0], adc_buffer[1], adc_buffer[2]);
-        Delay_Ms(500);
+        // loop();
+        raw_adc_test();
+        Delay_Ms(loop_ms);
     }
 }

@@ -44,10 +44,10 @@ endif
 terminal : monitor
 
 monitor :
-	$(MINICHLINK)/minichlink -T
+	$(MINICHLINK) -T
 
 gdbserver :
-	-$(MINICHLINK)/minichlink -baG
+	$(MINICHLINK) -baG
 
 clangd :
 	make clean
