@@ -1,5 +1,5 @@
 #include "ch32v003fun.h"
-#include "joypointv.h"
+#include "stickpointv.h"
 #include <stdio.h>
 
 #define I2C_SLAVE_ADDRESS 0xA

@@ -3,7 +3,7 @@
   "makefile.launchConfigurations": [
     {
       "cwd": "",
-      "sbinaryPath": "blink.elf",
+      "sbinaryPath": "stickpointv.elf",
       "binaryArgs": []
     }
   ],
