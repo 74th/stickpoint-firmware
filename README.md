@@ -4,7 +4,7 @@ Pointer module with joystick.
 
 ジュイスティックを使ったポインターモジュール
 
-![Alt text](docs/photo1.jpg)
+<img src="docs/photo1.jpg" width="50%" />
 
 > [!IMPORTANT]
 > This module does not replicate the feel of Trackpoint. このモジュールはトラックポイントの操作性を再現するものではありません。
@@ -25,9 +25,7 @@ Pointer module with joystick.
 
 Address: 0x0A
 
-When a send instruction is issued, the following 5 bytes are returned.
-
-送信指示を出すと、以下の 5 バイトを返します。
+When a send instruction is issued, the following 5 bytes are returned. 送信指示を出すと、以下の 5 バイトを返します。
 
 - 1: left
 - 2: right
@@ -39,10 +37,12 @@ When a send instruction is issued, the following 5 bytes are returned.
 
 - StickPointV (CH32V003)
   - v1.0.0
-    - Circuits: PDF, KiCanvas
-    - PCB: PDF, KiCanvas
+    - Semantics: [PDF](docs/stickpointv-ch32v003-v1.0.0-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-semantics.kicad_sch)
+    - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-pcb.kicad_pcb)
 - StickPoint (ATTiny402)
   - v1.0.1
+    - Semantics: [PDF](docs/stickpoint-attiny402-v1.0.1-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpoint-attiny402-v1.0.1-semantics.kicad_sch)
+    - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpoint-attiny402-v1.0.1-pcb.kicad_pcb)
 
 ## How to update Firmware ファームウェアの更新方法
 
