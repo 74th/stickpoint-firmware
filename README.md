@@ -6,6 +6,9 @@ Pointer module with joystick.
 
 ![Alt text](docs/photo1.jpg)
 
+> [!IMPORTANT]
+> This module does not replicate the feel of Trackpoint. このモジュールはトラックポイントの操作性を再現するものではありません。
+
 ## features 特徴
 
 - I2C connection, Pimoroni Trackball module PIM447 compatible
