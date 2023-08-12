@@ -21,7 +21,7 @@ void init_rcc(void)
     RCC->APB1PCENR |= RCC_APB1Periph_I2C1;
 }
 
-void init_i2c_slave(uint8_t address, volatile uint8_t *registers, uint8_t size)
+void init_i2c_slave(uint8_t address)
 {
     // https://github.com/cnlohr/ch32v003fun/blob/master/examples/i2c_slave/i2c_slave.h
 
@@ -359,7 +359,7 @@ int main()
     printf("initialize\r\n");
 #endif
 
-    init_i2c_slave(I2C_SLAVE_ADDRESS, i2c_buf, sizeof(i2c_buf));
+    init_i2c_slave(I2C_SLAVE_ADDRESS);
     init_adc();
 
 #ifdef FUNCONF_USE_UARTPRINTF
