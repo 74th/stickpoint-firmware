@@ -124,9 +124,9 @@ PIMORONI_TRACKBALL_SCALE is a value that is multiplied by the acquired value. Us
 
 The QMK Firmware documentation describes how to implement scrolling by clicking and moving. Please refer to this document. QMK Firmware のドキュメントにはクリックしながら移動するとスクロールする様に実装する方法について記述があります。こちらを参考にしてみてください。
 
-https://github.com/qmk/qmk_firmware/blob/master/docs/feature_pointing_device.md#drag-scroll-or-mouse-scroll
+https://docs.qmk.fm/#/feature_pointing_device?id=drag-scroll-or-mouse-scroll
 
-https://github.com/qmk/qmk_firmware/blob/master/docs/feature_pointing_device.md#advanced-drag-scroll
+https://docs.qmk.fm/#/feature_pointing_device?id=advanced-drag-scroll
 
 ## How to update Firmware / ファームウェアの更新方法
 
