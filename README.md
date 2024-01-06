@@ -180,7 +180,7 @@ Open the stickpoint-attiny402 directory as a workspace in VS Code (open the stic
 
 Adjust upload_port, upload_command, etc. in platform.ini and upload. platform.ini の upload_port、upload_command などを調整し、アップロードをしてください。
 
-## チューニングガイド
+## Tuning Guide / チューニングガイド
 
 The easiest way to tune the amount of movement is to control the amount of movement on the keyboard firmware side; in the case of QMK Firmware, you can set PIMORONI_TRACKBALL_SCALE, a value that is multiplied by the acquired amount of movement. If you want to increase the amount of movement, increase the number; if you want to decrease the amount of movement, decrease the number.
 
