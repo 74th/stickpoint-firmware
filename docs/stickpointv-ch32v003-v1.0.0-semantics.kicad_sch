@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "StickPointV")
+    (date "2024-01-06")
+    (rev "1.0.0")
+    (company "74th")
+  )
+
   (lib_symbols
     (symbol "$74th:CH32V003J4M6" (in_bom yes) (on_board yes)
       (property "Reference" "U" (at 13.97 15.24 0)
