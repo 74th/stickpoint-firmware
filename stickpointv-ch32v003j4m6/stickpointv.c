@@ -6,9 +6,11 @@
 
 #define ADC_NUMCHLS 3
 #define I2C_BUF_SIZE 5
+#define REDUCE_LEVEL 64
 
-volatile uint8_t i2c_buf[I2C_BUF_SIZE];
 volatile uint16_t adc_buf[ADC_NUMCHLS];
+volatile uint8_t output_value[I2C_BUF_SIZE];
+volatile uint32_t reduced_value_buf[I2C_BUF_SIZE];
 
 void I2C1_EV_IRQHandler(void) __attribute__((interrupt));
 void I2C1_ER_IRQHandler(void) __attribute__((interrupt));
@@ -145,6 +147,19 @@ void init_adc(void)
 
 uint8_t i2c_scan_position = 0;
 
+uint8_t reduce_value(int n)
+{
+    uint8_t out = 0;
+    uint32_t v = reduced_value_buf[n] + output_value[n];
+    while (v > REDUCE_LEVEL)
+    {
+        out++;
+        v -= REDUCE_LEVEL;
+    }
+    reduced_value_buf[n] = v;
+    return out;
+}
+
 void I2C1_EV_IRQHandler(void)
 {
     uint16_t STAR1, STAR2 __attribute__((unused));
@@ -185,7 +200,7 @@ void I2C1_EV_IRQHandler(void)
         if (i2c_scan_position < 5)
         {
             // 1byte 送信
-            uint8_t data = i2c_buf[i2c_scan_position];
+            uint8_t data = reduce_value(i2c_scan_position);
             I2C1->DATAR = data;
             i2c_scan_position++;
         }
@@ -321,11 +336,11 @@ void loop()
         }
     }
 
-    i2c_buf[0] = (uint8_t)left;
-    i2c_buf[1] = (uint8_t)right;
-    i2c_buf[2] = (uint8_t)down;
-    i2c_buf[3] = (uint8_t)up;
-    i2c_buf[4] = (uint8_t)0;
+    output_value[0] = (uint8_t)left;
+    output_value[1] = (uint8_t)right;
+    output_value[2] = (uint8_t)down;
+    output_value[3] = (uint8_t)up;
+    output_value[4] = (uint8_t)0;
 }
 
 void raw_adc_test()
@@ -333,11 +348,11 @@ void raw_adc_test()
     uint16_t raw_vcc = adc_buf[2];
     uint16_t raw_x = adc_buf[0];
     uint16_t raw_y = adc_buf[1];
-    i2c_buf[0] = (uint8_t)(raw_x >> 2);
-    i2c_buf[1] = (uint8_t)(raw_y >> 2);
-    i2c_buf[2] = (uint8_t)(raw_vcc >> 2);
-    i2c_buf[3] = (uint8_t)0;
-    i2c_buf[4] = (uint8_t)0;
+    output_value[0] = (uint8_t)(raw_x >> 2);
+    output_value[1] = (uint8_t)(raw_y >> 2);
+    output_value[2] = (uint8_t)(raw_vcc >> 2);
+    output_value[3] = (uint8_t)0;
+    output_value[4] = (uint8_t)0;
 
     // i2c_buf[0] = (uint8_t)((0xff00 & raw_x) >> 8);
     // i2c_buf[1] = (uint8_t)((0x00ff & raw_x));
