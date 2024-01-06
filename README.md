@@ -128,6 +128,10 @@ https://docs.qmk.fm/#/feature_pointing_device?id=drag-scroll-or-mouse-scroll
 
 https://docs.qmk.fm/#/feature_pointing_device?id=advanced-drag-scroll
 
+### Example / 例
+
+Sparrow60C https://github.com/74th/qmk_firmware_sparrow_keyboard/tree/sparrow/keyboards/sparrow60c
+
 ## How to update Firmware / ファームウェアの更新方法
 
 ### StickPointV (CH32V003)
