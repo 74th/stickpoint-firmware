@@ -48,7 +48,7 @@ When a send instruction is issued, the following 5 bytes are returned. 送信指
   - v1.0.0
     - Semantics: [PDF](docs/stickpointv-ch32v003-v1.0.0-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-semantics.kicad_sch)
     - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-pcb.kicad_pcb)
-- StickPoint (ATTiny402)
+- ⚠︎Deprecated⚠︎ StickPoint (ATTiny402)
   - v1.0.1
     - Semantics: [PDF](docs/stickpoint-attiny402-v1.0.1-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpoint-attiny402-v1.0.1-semantics.kicad_sch)
     - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpoint-attiny402-v1.0.1-pcb.kicad_pcb)
@@ -171,7 +171,7 @@ make
 
 Fine adjustment of the movement amount is specified by REDUCE_LEVEL. 移動量の微調整は REDUCE_LEVEL で指定します。
 
-### StickPoint (ATTiny402) (Deprecated)
+### ⚠︎Deprecated⚠︎ StickPoint (ATTiny402)
 
 A UPDI programmer is required to use the ATTiny402. ATTiny402 を使用するため、UPDI プログラマが必要です。
 The UPDI programmer can be produced using USB serial conversion. Please check here. UPDI プログラマは、USB シリアル変換を使って制作可能です。こちらを確認ください。
