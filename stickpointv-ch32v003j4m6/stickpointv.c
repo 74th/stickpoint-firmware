@@ -297,10 +297,10 @@ void loop()
     int32_t raw_vcc = adc_buf[2];
     int32_t raw_x = adc_buf[1];
     int32_t raw_y = adc_buf[0];
-    read_analog(raw_vcc, raw_x, &left, &right);
-    read_analog(raw_vcc, raw_y, &down, &up);
+    read_analog(raw_vcc, raw_x, &right, &left);
+    read_analog(raw_vcc, raw_y, &up, &down);
 
-    if (left == 0 && right == 0)
+    if (right == 0 && left == 0)
     {
         last_center_ms = 0;
     }
@@ -312,7 +312,7 @@ void loop()
         }
     }
 
-    if (left + right + up + down >= 4)
+    if (right + left + down + up >= 4)
     {
         if (!in_dash && last_center_ms < 300 && 10 < last_high_ms && last_high_ms < 300)
         {
@@ -320,10 +320,10 @@ void loop()
         }
         if (in_dash)
         {
-            left = left * 2;
             right = right * 2;
-            up = up * 2;
+            left = left * 2;
             down = down * 2;
+            up = up * 2;
         }
         last_high_ms = 0;
     }
