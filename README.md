@@ -206,6 +206,6 @@ StickPoint は read_analog 関数で、4 段階の量に変換しています。
 
 ## License
 
-MIT
+MIT License
 
-I would be happy if you would not sell the device.
+I would be happy if you would not sell the device. Booth ショップで扱っているため、販売はしないでいただけるとありがたいです。
