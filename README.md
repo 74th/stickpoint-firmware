@@ -30,6 +30,10 @@ Connect the I2C Grove port or the through-hole on the board to a port on the mic
 
 <img src="docs/stickpointv-ch32v003-v1.0.0-face.drawio.svg" width="50%" />
 
+Note that I2C SDA and SCL require a pull-up. RP2040 requires an external pull-up resistor of about 1 kΩ. When operating at 3.3 V, connect a 1 kΩ resistor between the 3.3 V supply and SDA and SCL. なお、I2C の SDA、SCL にはプルアップが必要です。RP2040 では外部の 1kΩ 程度のプルアップ抵抗が必要になります。3.3V で動作させる場合は、3.3V 電源と、SDA、SCL の間に 1kΩ の抵抗を接続してください。
+
+<img src="docs/pullup.png" width="50%" />
+
 ## I2C Protocol / I2C 通信仕様
 
 Address: 0x0A
