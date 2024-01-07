@@ -12,6 +12,8 @@ Pointer module with joystick.
 > [!IMPORTANT]
 > KiCad ファイルのスナップショットも含まれていますが、Booth での購入など作者 74th から入手したもののみサポートします。
 
+On sale at Booth. Booth にて販売中 https://74th.booth.pm/items/5404009
+
 ## features / 特徴
 
 - I2C connection, Pimoroni Trackball module PIM447 compatible
