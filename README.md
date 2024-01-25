@@ -146,7 +146,7 @@ WCH-LinkE is required to use CH32V003. CH32V003 を使用するため、WCH-Link
 
 WCH-LinkE is available at the following stores. Please note that similar WCH-Link (without E) is not supported. WCH-LinkE は、以下のショップで購入可能です。類似品 WCH-Link(E のないもの) は対応していませんので、ご注意ください。
 
-- WCH-LinkE (秋月電子通商) https://akizukidenshi.com/catalog/g/gM-18065/
+- WCH-LinkE (秋月電子通商) https://akizukidenshi.com/catalog/g/g118065/
 - WCH-LinkE (Aliexpress) https://www.aliexpress.com/item/1005005180653105.html
 - CH32V003 Kit (Aliexpress WCH-Official Store) https://www.aliexpress.com/item/1005004895791296.html
 
