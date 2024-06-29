@@ -30,6 +30,14 @@ On sale at Booth. Booth にて販売中 https://74th.booth.pm/items/5404009
 
 Connect the I2C Grove port or the through-hole on the board to a port on the microcontroller where I2C is available. I2C Grove ポート、もしくは基板のスルーホールを、マイコンの I2C が利用できるポートに接続してください。
 
+### StickPointV v1.1.0
+
+I2C の SDA、SCL は、モジュール内で 1kΩ 抵抗で VCC 電圧にプルアップされています。
+
+<img src="docs/stickpointv-ch32v003-v1.1.0-face.drawio.svg" width="50%" />
+
+### StickPointV v1.0.0
+
 <img src="docs/stickpointv-ch32v003-v1.0.0-face.drawio.svg" width="50%" />
 
 Note that I2C SDA and SCL require a pull-up. RP2040 requires an external pull-up resistor of about 1 kΩ. When operating at 3.3 V, connect a 1 kΩ resistor between the 3.3 V supply and SDA and SCL. なお、I2C の SDA、SCL にはプルアップが必要です。RP2040 では外部の 1kΩ 程度のプルアップ抵抗が必要になります。3.3V で動作させる場合は、3.3V 電源と、SDA、SCL の間に 1kΩ の抵抗を接続してください。
@@ -51,6 +59,12 @@ When a send instruction is issued, the following 5 bytes are returned. 送信指
 ## Documents
 
 - StickPointV (CH32V003)
+  - v1.1.0
+    - Semantics: [PDF](docs/stickpointv-ch32v003-v1.1.0-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.1.0-semantics.kicad_sch), [kicad_sch](./docs/stickpointv-ch32v003-v1.1.0-semantics.kicad_sch)
+    - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.1.0-pcb.kicad_pcb)
+    - changed
+      - add I2C pull-up resistor
+      - add Qwiic connector
   - v1.0.0
     - Semantics: [PDF](docs/stickpointv-ch32v003-v1.0.0-semantics.pdf), [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-semantics.kicad_sch), [kicad_sch](./docs/stickpointv-ch32v003-v1.0.0-semantics.kicad_sch)
     - PCB: [KiCanvas](https://kicanvas.org/?github=https%3A%2F%2Fgithub.com%2F74th%2Fstickpoint-firmware%2Fblob%2Fmain%2Fdocs%2Fstickpointv-ch32v003-v1.0.0-pcb.kicad_pcb)
@@ -161,7 +175,7 @@ If the Grove port is already providing power, only the following two ports are n
 - GND
 - SWDIO
 
-<img src="docs/stickpointv-ch32v003-v1.0.0-face.drawio.svg" width="50%" />
+<img src="docs/stickpointv-ch32v003-v1.1.0-face.drawio.svg" width="50%" /><img src="docs/stickpointv-ch32v003-v1.0.0-face.drawio.svg" width="50%" />
 
 This firmware uses ch32v003fun, please refer to the ch32v003fun documentation for how to set up the ch32v003fun development environment. このファームウェアは ch32v003fun を使用しています。ch32v003fun の開発環境の整え方は ch32v003fun のドキュメントを参照して下さい。
 
